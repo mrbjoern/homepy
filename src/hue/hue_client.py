@@ -14,6 +14,7 @@ class HueClient(object):
 
     def __init__(self):
         self._hue_api = HueApi()
+        """
         lights = self._hue_api.get_lights()
         for light in lights:
             log.info(light)
@@ -23,6 +24,13 @@ class HueClient(object):
         action = Action({'on': True, 'bri': 255, 'alert': 'select'})
         result = self._hue_api.update_room(rooms[3], action)
         log.info(result)
+        """
+
+    def get_lights(self):
+        return self._hue_api.get_lights()
+
+    def get_rooms(self):
+        return self._hue_api.get_rooms()
 
 
 HueClient()

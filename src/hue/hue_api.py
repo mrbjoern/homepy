@@ -1,12 +1,12 @@
-import logging
 import json
+import logging
 
 import requests
 import yaml
 
+from hue.action import Action
 from hue.light import Light
 from hue.room import Room
-from hue.action import Action
 
 log = logging.getLogger(__name__)
 
@@ -52,14 +52,14 @@ class HueApi(object):
             lights.append(Light(key, value))
         return lights
     
-    def update_light(self, light: Light, action: Action):
+    def update_light(self, hue_id: int, action: Action):
         """
         Update a light resource
-        :param light:
+        :param hue_id:
         :param action:
         :return:
         """
-        return self._put('/lights/' + light.id + '/state', action)
+        return self._put('/lights/' + hue_id.__str__() + '/state', action)
 
     def get_rooms(self):
         """
@@ -73,14 +73,14 @@ class HueApi(object):
                 rooms.append(Room(key, value))
         return rooms
 
-    def update_room(self, room: Room, action: Action):
+    def update_room(self, hue_id: int, action: Action):
         """
         Update a light resource
-        :param room:
+        :param hue_id:
         :param action:
         :return:
         """
-        return self._put('/groups/' + room.id + '/action', action)
+        return self._put('/groups/' + hue_id.__str__() + '/action', action)
 
     def get_schedules(self):
         return requests.get(self._url + '/schedules').json()

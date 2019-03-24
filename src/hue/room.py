@@ -1,3 +1,6 @@
+from hue.action import Action
+
+
 class Room(object):
 
     def __init__(self, hue_id, room):
@@ -7,7 +10,7 @@ class Room(object):
         """
         self.id = hue_id
         self.name = room['name']
-        self.action = room['action']
+        self.state = Action(room['action'])
 
     def __str__(self):
         return self.name
