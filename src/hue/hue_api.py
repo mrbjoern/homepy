@@ -4,11 +4,16 @@ import logging
 import requests
 import yaml
 
-from hue.action import Action
-from hue.light import Light
-from hue.room import Room
-
 log = logging.getLogger(__name__)
+
+
+def get_sub_dict(dictionary, *argv):
+    subset = {}
+    for key, value in dictionary.items():
+        log.info(value)
+        subset[key] = ({k: value[k] for k in argv})
+    log.info(subset)
+    return subset
 
 
 class HueApi(object):
@@ -32,27 +37,25 @@ class HueApi(object):
         """
         return requests.get(self._url + endpoint).json()
 
-    def _put(self, endpoint: str, action: Action):
+    def _put(self, endpoint: str, action):
         """
         Applies an action to a resource
         :param endpoint: string
         :param action: dict of actions
         :return: result of action
         """
-        return requests.put(self._url + endpoint, json.dumps(action.__dict__)).json()
+        log.info(json.dumps(action))
+        return requests.put(self._url + endpoint, json.dumps(action)).json()
 
     def get_lights(self):
         """
         Get all lights registered with the Hue Bridge
-        :return: List of Light objects
+        :return: A filtered list of lights
         """
         result = self._get('/lights')
-        lights = []
-        for key, value in result.items():
-            lights.append(Light(key, value))
-        return lights
+        return get_sub_dict(result, 'name', 'state')
     
-    def update_light(self, hue_id: int, action: Action):
+    def update_light(self, hue_id: int, action):
         """
         Update a light resource
         :param hue_id:
@@ -67,13 +70,9 @@ class HueApi(object):
         :return: List of Room objects
         """
         result = self._get('/groups')
-        rooms = []
-        for key, value in result.items():
-            if value['type'] == 'Room':
-                rooms.append(Room(key, value))
-        return rooms
+        return get_sub_dict(result, 'name', 'state', 'lights')
 
-    def update_room(self, hue_id: int, action: Action):
+    def update_room(self, hue_id: int, action):
         """
         Update a light resource
         :param hue_id:
@@ -83,7 +82,9 @@ class HueApi(object):
         return self._put('/groups/' + hue_id.__str__() + '/action', action)
 
     def get_schedules(self):
-        return requests.get(self._url + '/schedules').json()
+        result = self._get('/schedules')
+        return get_sub_dict(result, 'name', 'state')
 
     def get_scenes(self):
-        return requests.get(self._url + '/scenes').json()
+        result = self._get('/scenes')
+        return get_sub_dict(result, 'name', 'state')
