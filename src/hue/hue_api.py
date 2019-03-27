@@ -70,7 +70,7 @@ class HueApi(object):
         :return: List of Room objects
         """
         result = self._get('/groups')
-        return get_sub_dict(result, 'name', 'state', 'lights')
+        return get_sub_dict(result, 'name', 'lights', 'action', 'type')
 
     def update_room(self, hue_id: int, action):
         """

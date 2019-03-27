@@ -1,6 +1,7 @@
 import logging
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from marshmallow import Schema, fields, ValidationError, validate
 
 from hue import HueClient
@@ -8,6 +9,7 @@ from hue import HueClient
 log = logging.getLogger(__name__)
 
 app = Flask(__name__)
+CORS(app)
 
 
 class ActionSchema(Schema):
