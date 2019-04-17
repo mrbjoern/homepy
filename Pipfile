@@ -8,6 +8,13 @@ verify_ssl = true
 [packages]
 requests = "*"
 pyyaml = "*"
+flask = "*"
+flask-restful = "*"
+marshmallow = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

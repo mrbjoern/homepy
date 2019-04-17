@@ -1,7 +1,6 @@
 import logging
 
 from hue import HueApi
-from hue.action import Action
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
@@ -31,6 +30,15 @@ class HueClient(object):
 
     def get_rooms(self):
         return self._hue_api.get_rooms()
+
+    def get_scenes(self):
+        return self._hue_api.get_scenes()
+
+    def update_light(self, hue_id: int, action):
+        return self._hue_api.update_light(hue_id, action)
+
+    def update_room(self, hue_id: int, action):
+        return self._hue_api.update_room(hue_id, action)
 
 
 HueClient()
