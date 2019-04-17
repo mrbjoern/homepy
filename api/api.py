@@ -4,7 +4,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from marshmallow import Schema, fields, ValidationError, validate
 
-from hue import HueClient
+import hue
 
 log = logging.getLogger(__name__)
 
@@ -22,12 +22,17 @@ class ActionSchema(Schema):
 
 @app.route('/hue/lights', methods=['GET'])
 def hue_lights():
-    return jsonify(HueClient().get_lights())
+    return jsonify(hue.HueClient().get_lights())
 
 
 @app.route('/hue/rooms', methods=['GET'])
 def hue_rooms():
-    return jsonify(HueClient().get_rooms())
+    return jsonify(hue.HueClient().get_rooms())
+
+
+@app.route('/hue/scenes', methods=['GET'])
+def hue_scenes():
+    return jsonify(hue.HueClient().get_scenes())
 
 
 @app.route('/hue/lights/<int:hue_id>', methods=['PUT'])
@@ -35,7 +40,7 @@ def hue_update_light(hue_id: int):
     try:
         action = ActionSchema().load(request.get_json())
         log.info(action)
-        result = HueClient().update_light(hue_id, action)
+        result = hue.HueClient().update_light(hue_id, action)
     except ValidationError as err:
         raise err
     return jsonify(result)
@@ -46,7 +51,7 @@ def hue_update_room(hue_id: int):
     try:
         action = ActionSchema().load(request.get_json())
         log.info(action)
-        result = HueClient().update_room(hue_id, action)
+        result = hue.HueClient().update_room(hue_id, action)
     except ValidationError as err:
         raise err
     return jsonify(result)

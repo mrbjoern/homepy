@@ -22,7 +22,11 @@ class HueApi(object):
         with open('config.yaml', 'r') as file:
             config = yaml.load(file, Loader=yaml.SafeLoader)
             username = config['hue']['username']
-        discovery_result = requests.get('https://discovery.meethue.com/')
+        try:
+            discovery_result = requests.get('https://discovery.meethue.com/')
+        except:
+            log.error('could not connect to discovery.meethue.com')
+            discovery_result = []
         if not discovery_result:
             log.error('No bridges found')
             return
@@ -87,4 +91,6 @@ class HueApi(object):
 
     def get_scenes(self):
         result = self._get('/scenes')
-        return get_sub_dict(result, 'name', 'state')
+        log.info(result)
+        #return get_sub_dict(result, 'name', 'state')
+        return result

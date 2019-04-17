@@ -31,6 +31,9 @@ class HueClient(object):
     def get_rooms(self):
         return self._hue_api.get_rooms()
 
+    def get_scenes(self):
+        return self._hue_api.get_scenes()
+
     def update_light(self, hue_id: int, action):
         return self._hue_api.update_light(hue_id, action)
 
