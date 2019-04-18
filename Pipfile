@@ -12,6 +12,8 @@ flask = "*"
 flask-restful = "*"
 marshmallow = "*"
 flask-cors = "*"
+pytest = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.7"

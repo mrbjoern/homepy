@@ -1,15 +1,13 @@
 import logging
 
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request, Blueprint
 from marshmallow import Schema, fields, ValidationError, validate
 
-import hue
+from api.hue import HueClient
 
 log = logging.getLogger(__name__)
 
-app = Flask(__name__)
-CORS(app)
+bp = Blueprint('hue_api', __name__, url_prefix="/hue")
 
 
 class ActionSchema(Schema):
@@ -20,44 +18,45 @@ class ActionSchema(Schema):
     sat = fields.Integer(validate=validate.Range(min=0, max=254))
 
 
-@app.route('/hue/lights', methods=['GET'])
+@bp.route('/lights', methods=['GET'])
 def hue_lights():
-    return jsonify(hue.HueClient().get_lights())
+    return jsonify(HueClient().get_lights())
 
 
-@app.route('/hue/rooms', methods=['GET'])
+@bp.route('/rooms', methods=['GET'])
 def hue_rooms():
-    return jsonify(hue.HueClient().get_rooms())
+    return jsonify(HueClient().get_rooms())
 
 
-@app.route('/hue/scenes', methods=['GET'])
+@bp.route('/scenes', methods=['GET'])
 def hue_scenes():
-    return jsonify(hue.HueClient().get_scenes())
+    return jsonify(HueClient().get_scenes())
 
 
-@app.route('/hue/lights/<int:hue_id>', methods=['PUT'])
+@bp.route('/lights/<int:hue_id>', methods=['PUT'])
 def hue_update_light(hue_id: int):
     try:
         action = ActionSchema().load(request.get_json())
         log.info(action)
-        result = hue.HueClient().update_light(hue_id, action)
+        result = HueClient().update_light(hue_id, action)
     except ValidationError as err:
         raise err
     return jsonify(result)
 
 
-@app.route('/hue/rooms/<int:hue_id>', methods=['PUT'])
+@bp.route('/rooms/<int:hue_id>', methods=['PUT'])
 def hue_update_room(hue_id: int):
     try:
         action = ActionSchema().load(request.get_json())
         log.info(action)
-        result = hue.HueClient().update_room(hue_id, action)
+        result = HueClient().update_room(hue_id, action)
     except ValidationError as err:
         raise err
     return jsonify(result)
 
 
-@app.errorhandler(404)
+"""
+@bp.errorhandler(404)
 def not_found(error):
     log.info(error)
     response = jsonify({'error': 'Not found'})
@@ -72,6 +71,6 @@ def validation_error(error):
     response.status_code = 422
     return response
 
-
 if __name__ == '__main__':
     app.run(debug=True)
+"""

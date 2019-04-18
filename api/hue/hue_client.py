@@ -1,6 +1,6 @@
 import logging
 
-from hue import HueApi
+from api.hue import HueApi
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
