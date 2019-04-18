@@ -1,6 +1,6 @@
 import logging
 
-from flask import Flask, jsonify, request, Blueprint
+from flask import jsonify, request, Blueprint
 from marshmallow import Schema, fields, ValidationError, validate
 
 from api.hue import HueClient
@@ -56,21 +56,6 @@ def hue_update_room(hue_id: int):
 
 
 """
-@bp.errorhandler(404)
-def not_found(error):
-    log.info(error)
-    response = jsonify({'error': 'Not found'})
-    response.status_code = 404
-
-    return response
-
-
-@app.errorhandler(ValidationError)
-def validation_error(error):
-    response = jsonify(error.messages)
-    response.status_code = 422
-    return response
-
 if __name__ == '__main__':
     app.run(debug=True)
 """
